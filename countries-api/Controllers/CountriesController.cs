@@ -9,6 +9,7 @@ namespace countries_api.Controllers;
 public class CountriesController : ControllerBase
 {
     private readonly ILogger<CountriesController> _logger;
+    private IConfiguration _configuration;
 
     private const string NameCommon = "common";
     private const string SortAscend = "ascend";
@@ -17,9 +18,10 @@ public class CountriesController : ControllerBase
     private const int CountDefault = 10;
     private const int PageDefault = 1;
 
-    public CountriesController(ILogger<CountriesController> logger)
+    public CountriesController(ILogger<CountriesController> logger, IConfiguration config)
     {
         _logger = logger;
+        _configuration = config;
     }
 
     [HttpGet]
@@ -47,7 +49,7 @@ public class CountriesController : ControllerBase
     }
 
     private async Task<List<Country>?> FetchCountries() {
-        const string apiUrl = "https://restcountries.com/v3.1/all?fields=name,currencies,capital,region,languages,population";
+        string apiUrl = _configuration.GetValue<string>("ApiUrl");
 
         using(HttpClient client = new HttpClient())
         {
