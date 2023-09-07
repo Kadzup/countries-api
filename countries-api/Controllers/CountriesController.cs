@@ -67,6 +67,17 @@ public class CountriesController : ControllerBase
         return foundCountries;
     }
 
+    [HttpGet]
+    [Route("pagination")]
+    public async Task<IEnumerable<Country>?> Pagination(int count, int page = 0)
+    {
+        List<Country>? countries = await FetchCountries();
+
+        List<Country>? foundCountries = Pagination(countries, count, page);
+
+        return foundCountries;
+    }
+
     private async Task<List<Country>?> FetchCountries() {
         const string apiUrl = "https://restcountries.com/v3.1/all?fields=name,currencies,capital,region,languages,population";
 
@@ -119,5 +130,10 @@ public class CountriesController : ControllerBase
         }
 
         return countries?.OrderBy(country => country.Name.Common).ToList();
+    }
+
+    private List<Country>? Pagination(List<Country>? countries, int count, int page)
+    {
+        return countries?.Skip((page - 1) * count).Take(count).ToList();
     }
 }
