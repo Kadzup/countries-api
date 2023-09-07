@@ -55,27 +55,23 @@ public class CountriesController : ControllerBase
             {
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
 
-                if (!response.IsSuccessStatusCode) {
-                    throw new Exception("Failed to retrieve countries data");
-                }
-
                 string jsonValue = await response.Content.ReadAsStringAsync();
                 List<Country>? countries = JsonSerializer.Deserialize<List<Country>>(jsonValue);
 
                 return countries;
             }
-            catch(HttpRequestException e) {
-                _logger.LogError(1, e.ToString());
+            catch(HttpRequestException ex) {
+                _logger.LogError(ex, ex.Message);
             }
-            catch(Exception e) {
-                _logger.LogError(0, e.ToString());
+            catch(Exception ex) {
+                _logger.LogError(ex, ex.Message);
             }
         }
 
         return null;
     }
 
-    private List<Country>? FindByName(List<Country>? countries, string name)
+    public static List<Country>? FindByName(List<Country>? countries, string name)
     {
         return countries?.
             Where(country =>
@@ -86,12 +82,12 @@ public class CountriesController : ControllerBase
             .ToList();
     }
 
-    private List<Country>? FindByPopulation(List<Country>? countries, int population)
+    public static List<Country>? FindByPopulation(List<Country>? countries, int population)
     {
         return countries?.Where(country => country.Population < population * 1_000_000).ToList();
     }
 
-    private List<Country>? SortByName(List<Country>? countries, string sortingMethod) {
+    public static List<Country>? SortByName(List<Country>? countries, string sortingMethod) {
         if(sortingMethod == SortDescend)
         {
             return countries?.OrderByDescending(country => country.Name.Common).ToList();
@@ -100,7 +96,7 @@ public class CountriesController : ControllerBase
         return countries?.OrderBy(country => country.Name.Common).ToList();
     }
 
-    private List<Country>? Pagination(List<Country>? countries, int count, int page)
+    public static List<Country>? Pagination(List<Country>? countries, int count, int page)
     {
         return countries?.Skip((page - 1) * count).Take(count).ToList();
     }
