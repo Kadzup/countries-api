@@ -9,7 +9,7 @@ namespace countries_api.Controllers;
 public class CountriesController : ControllerBase
 {
     private readonly ILogger<CountriesController> _logger;
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
     private const string NameCommon = "common";
     private const string SortAscend = "ascend";
@@ -61,9 +61,6 @@ public class CountriesController : ControllerBase
                 List<Country>? countries = JsonSerializer.Deserialize<List<Country>>(jsonValue);
 
                 return countries;
-            }
-            catch(HttpRequestException ex) {
-                _logger.LogError(ex, ex.Message);
             }
             catch(Exception ex) {
                 _logger.LogError(ex, ex.Message);

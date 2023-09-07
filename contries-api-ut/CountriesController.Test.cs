@@ -1,15 +1,19 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using countries_api.Controllers;
 using countries_api.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace contries_api_ut;
 
 public class CountriesControllerTest
 {
-    private async Task<List<Country>?> FetchCountries()
-    {
-        const string apiUrl = "https://restcountries.com/v3.1/all?fields=name,currencies,capital,region,languages,population";
+    private static readonly string apiUrl = "https://restcountries.com/v3.1/all?fields=name,currencies,capital,region,languages,population";
 
+    static private async Task<List<Country>?> FetchCountries()
+    {
         using (HttpClient client = new HttpClient())
         {
             try
@@ -28,6 +32,68 @@ public class CountriesControllerTest
         }
 
         return null;
+    }
+
+    [Fact]
+    public async void GetCountriesNoArgs()
+    {
+        var loggerMock = new Mock<ILogger<CountriesController>>();
+
+        var inMemorySettings = new Dictionary<string, string> {
+            {"ApiUrl", apiUrl},
+        };
+
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var controller = new CountriesController(loggerMock.Object, configuration);
+
+        var result = await controller.GetCountries();
+
+        Assert.NotEmpty(result);
+    }
+
+    [Fact]
+    public async void GetCountriesByName()
+    {
+        var loggerMock = new Mock<ILogger<CountriesController>>();
+
+        var inMemorySettings = new Dictionary<string, string> {
+            {"ApiUrl", apiUrl},
+        };
+
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var controller = new CountriesController(loggerMock.Object, configuration);
+
+        var result = await controller.GetCountries(name:"uk");
+
+        Assert.NotEmpty(result);
+        Assert.True(result?.Any(country => country.Name.Common == "Ukraine"));
+    }
+
+    [Fact]
+    public async void GetCountriesByPopulation()
+    {
+        var loggerMock = new Mock<ILogger<CountriesController>>();
+
+        var inMemorySettings = new Dictionary<string, string> {
+            {"ApiUrl", apiUrl},
+        };
+
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var controller = new CountriesController(loggerMock.Object, configuration);
+
+        var result = await controller.GetCountries(population: 5);
+
+        Assert.NotEmpty(result);
+        Assert.True(result?.Any(country => country.Population <= 5 * 1_000_000));
     }
 
     [Fact]
