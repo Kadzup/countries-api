@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace countries_api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("countries")]
 public class CountriesController : ControllerBase
 {
     private readonly ILogger<CountriesController> _logger;
@@ -15,12 +15,35 @@ public class CountriesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetCountries")]
-    public async Task<IEnumerable<Country>?> Get()
+    [HttpGet]
+    [Route("getCountries")]
+    public async Task<IEnumerable<Country>?> GetCountries()
     {
         List<Country>? countries = await FetchCountries();
 
         return countries;
+    }
+
+    [HttpGet]
+    [Route("findCountriesByName")]
+    public async Task<IEnumerable<Country>?> FindCountriesByName(string name)
+    {
+        List<Country>? countries = await FetchCountries();
+
+        if(name == "common")
+        {
+            return countries;
+        }
+
+        List<Country>? foundCountries = countries?.
+            Where(country =>
+            {
+                return country.Name.Common.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                       country.Name.Official.Contains(name, StringComparison.OrdinalIgnoreCase);
+            })
+            .ToList();
+
+        return foundCountries;
     }
 
     private async Task<List<Country>?> FetchCountries() {
