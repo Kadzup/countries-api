@@ -10,6 +10,13 @@ public class CountriesController : ControllerBase
 {
     private readonly ILogger<CountriesController> _logger;
 
+    private const string NameCommon = "common";
+    private const string SortAscend = "ascend";
+    private const string SortDescend = "descend";
+    private const int PopulationDefault = 0;
+    private const int CountDefault = 10;
+    private const int PageDefault = 1;
+
     public CountriesController(ILogger<CountriesController> logger)
     {
         _logger = logger;
@@ -17,65 +24,26 @@ public class CountriesController : ControllerBase
 
     [HttpGet]
     [Route("getCountries")]
-    public async Task<IEnumerable<Country>?> GetCountries()
+    public async Task<IEnumerable<Country>?> GetCountries(
+        string name = NameCommon, string sort = SortAscend, int population = PopulationDefault,
+        int count = CountDefault, int page = PageDefault)
     {
         List<Country>? countries = await FetchCountries();
+
+        if(name != NameCommon)
+        {
+            countries = FindByName(countries, name);
+        }
+
+        if(population > PopulationDefault)
+        {
+            countries = FindByPopulation(countries, population);
+        }
+
+        countries = SortByName(countries, sort);
+        countries = Pagination(countries, count, page);
 
         return countries;
-    }
-
-    [HttpGet]
-    [Route("findCountriesByName")]
-    public async Task<IEnumerable<Country>?> FindCountriesByName(string name = "common")
-    {
-        List<Country>? countries = await FetchCountries();
-
-        if(name == "common")
-        {
-            return countries;
-        }
-
-        List<Country>? foundCountries = FindByName(countries, name);
-
-        return foundCountries;
-    }
-
-    [HttpGet]
-    [Route("findCountriesByPopulation")]
-    public async Task<IEnumerable<Country>?> FindCountriesByPopulation(int population = 0)
-    {
-        List<Country>? countries = await FetchCountries();
-
-        if(population <= 0)
-        {
-            return countries;
-        }
-
-        List<Country>? foundCountries = FindByPopulation(countries, population);
-
-        return foundCountries;
-    }
-
-    [HttpGet]
-    [Route("sortCountriesByName")]
-    public async Task<IEnumerable<Country>?> SortCountriesByName(string sort = "ascend")
-    {
-        List<Country>? countries = await FetchCountries();
-
-        List<Country>? foundCountries = SortByName(countries, sort);
-
-        return foundCountries;
-    }
-
-    [HttpGet]
-    [Route("pagination")]
-    public async Task<IEnumerable<Country>?> Pagination(int count, int page = 0)
-    {
-        List<Country>? countries = await FetchCountries();
-
-        List<Country>? foundCountries = Pagination(countries, count, page);
-
-        return foundCountries;
     }
 
     private async Task<List<Country>?> FetchCountries() {
@@ -124,7 +92,7 @@ public class CountriesController : ControllerBase
     }
 
     private List<Country>? SortByName(List<Country>? countries, string sortingMethod) {
-        if(sortingMethod == "descend")
+        if(sortingMethod == SortDescend)
         {
             return countries?.OrderByDescending(country => country.Name.Common).ToList();
         }
