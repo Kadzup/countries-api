@@ -6,12 +6,13 @@ Countries API it's a simple project based on ASP.net with one endpoint that can 
 Also, you should be informed that each request is using pagination, by default endpoint will return you 10 records per page, to see how to use each of the arguments please see **Examples** part.
 
 ## SQ
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kadzup_countries-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Kadzup_countries-api) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Kadzup_countries-api&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Kadzup_countries-api) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Kadzup_countries-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Kadzup_countries-api) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Kadzup_countries-api&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Kadzup_countries-api) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Kadzup_countries-api&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Kadzup_countries-api)
 <img width="1191" alt="image" src="https://github.com/Kadzup/countries-api/assets/38593867/bc079c7f-39d8-4615-858b-91ca0334782a">
 
 ## How to run this project
 
 ### Development mode
-If you have installed [Visual Studio](https://visualstudio.microsoft.com/downloads/) with .net6 tools, you can simply fetch this repo using [git](https://git-scm.com/), [Github desktop](https://desktop.github.com/), or similar tools and simply launch the .sln file.
+If you have installed [Visual Studio](https://visualstudio.microsoft.com/downloads/) with .net6 tools, you can simply fetch this repo using [git](https://git-scm.com/), [Github Desktop](https://desktop.github.com/), or similar tools and simply launch the .sln file.
 After that, you can simply run the **"Build"** command and launch the "countries-api" project.
 
 ### User mode
