@@ -26,7 +26,7 @@ public class CountriesController : ControllerBase
 
     [HttpGet]
     [Route("findCountriesByName")]
-    public async Task<IEnumerable<Country>?> FindCountriesByName(string name)
+    public async Task<IEnumerable<Country>?> FindCountriesByName(string name = "common")
     {
         List<Country>? countries = await FetchCountries();
 
@@ -35,16 +35,27 @@ public class CountriesController : ControllerBase
             return countries;
         }
 
-        List<Country>? foundCountries = countries?.
-            Where(country =>
-            {
-                return country.Name.Common.Contains(name, StringComparison.OrdinalIgnoreCase) ||
-                       country.Name.Official.Contains(name, StringComparison.OrdinalIgnoreCase);
-            })
-            .ToList();
+        List<Country>? foundCountries = FindByName(countries, name);
 
         return foundCountries;
     }
+
+    [HttpGet]
+    [Route("findCountriesByPopulation")]
+    public async Task<IEnumerable<Country>?> FindCountriesByPopulation(int population = 0)
+    {
+        List<Country>? countries = await FetchCountries();
+
+        if(population <= 0)
+        {
+            return countries;
+        }
+
+        List<Country>? foundCountries = FindByPopulation(countries, population);
+
+        return foundCountries;
+    }
+
 
     private async Task<List<Country>?> FetchCountries() {
         const string apiUrl = "https://restcountries.com/v3.1/all?fields=name,currencies,capital,region,languages,population";
@@ -73,5 +84,21 @@ public class CountriesController : ControllerBase
         }
 
         return null;
+    }
+
+    private List<Country>? FindByName(List<Country>? countries, string name)
+    {
+        return countries?.
+            Where(country =>
+            {
+                return country.Name.Common.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                       country.Name.Official.Contains(name, StringComparison.OrdinalIgnoreCase);
+            })
+            .ToList();
+    }
+
+    private List<Country>? FindByPopulation(List<Country>? countries, int population)
+    {
+        return countries?.Where(country => country.Population < population * 1_000_000).ToList();
     }
 }
