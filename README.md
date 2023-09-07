@@ -5,6 +5,9 @@ Countries API it's a simple project based on ASP.net with one endpoint that can 
 
 Also, you should be informed that each request is using pagination, by default endpoint will return you 10 records per page, to see how to use each of the arguments please see **Examples** part.
 
+## SQ
+<img width="1191" alt="image" src="https://github.com/Kadzup/countries-api/assets/38593867/bc079c7f-39d8-4615-858b-91ca0334782a">
+
 ## How to run this project
 
 ### Development mode
