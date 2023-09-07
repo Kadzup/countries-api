@@ -21,6 +21,13 @@ You can download the attached [release](https://github.com/Kadzup/countries-api/
 
 Route: `countries/getCountries`
 
+Default values:
+- `name` - Country name or part of it's name, use `common` for any name
+- `population` - Country population in millions, use `0` for any population
+- `sort` - Sort countries by name, default sorting is `ascend`, also you can use `descend`
+- `count` - count of countries per request, default value is `10`
+- `page` - index of page, usually used with `count` for pagination, default page index is `1`
+
 Request:
 ```
 curl -X 'GET' \
